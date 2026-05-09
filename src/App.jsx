@@ -4,9 +4,8 @@ import Navbar from './components/Navbar';
 import Player from './components/Player';
 import HomePage from './pages/HomePage';
 import { useSongs } from './hooks/useSongs';
-import { Loader2 } from 'lucide-react';
 
-function AppContent() {
+const App = () => {
   const { songs, loading: songsLoading, error: songsError, refreshSongs } = useSongs();
   const [activeTab, setActiveTab] = useState('home');
   const [currentSong, setCurrentSong] = useState(null);
@@ -95,12 +94,6 @@ function AppContent() {
       />
     </div>
   );
-}
-
-function App() {
-  return (
-    <AppContent />
-  );
-}
+};
 
 export default App;
