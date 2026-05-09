@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { Search, Upload, Bell, User, ChevronLeft, ChevronRight, LogOut, X } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
 import UploadModal from './UploadModal';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = ({ onRefresh, searchQuery, setSearchQuery }) => {
-  const { user, signOut } = useAuth();
   const [isUploadOpen, setIsUploadOpen] = useState(false);
 
   return (
@@ -59,20 +57,8 @@ const Navbar = ({ onRefresh, searchQuery, setSearchQuery }) => {
             <span className="hidden sm:inline">Sync</span>
           </button>
           
-          <button 
-            onClick={signOut}
-            className="p-2.5 text-zinc-500 hover:text-red-400 transition-colors bg-white/5 rounded-xl border border-white/5"
-            title="Sign Out"
-          >
-            <LogOut size={20} />
-          </button>
-
           <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-green-600 flex items-center justify-center cursor-pointer border border-white/10 hover:scale-105 transition-transform overflow-hidden relative shadow-lg shadow-primary/10">
-             <img 
-              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email}`} 
-              alt="Profile" 
-              className="w-full h-full object-cover"
-             />
+             <User className="text-black" size={20} />
           </div>
         </div>
       </nav>

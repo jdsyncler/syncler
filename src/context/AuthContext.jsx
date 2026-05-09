@@ -26,8 +26,20 @@ export const AuthProvider = ({ children }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = (email, password) => supabase.auth.signUp({ email, password });
-  const signIn = (email, password) => supabase.auth.signInWithPassword({ email, password });
+  const signUp = (email, password) => supabase.auth.signUp({ 
+    email, 
+    password,
+    options: {
+      emailRedirectTo: "https://syncler-one.vercel.app"
+    }
+  });
+  const signIn = (email, password) => supabase.auth.signInWithPassword({ 
+    email, 
+    password,
+    options: {
+      redirectTo: "https://syncler-one.vercel.app"
+    }
+  });
   const signOut = () => supabase.auth.signOut();
 
   const value = {

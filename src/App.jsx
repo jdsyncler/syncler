@@ -3,13 +3,10 @@ import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import Player from './components/Player';
 import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import { AuthProvider, useAuth } from './context/AuthContext';
 import { useSongs } from './hooks/useSongs';
 import { Loader2 } from 'lucide-react';
 
 function AppContent() {
-  const { user, loading: authLoading } = useAuth();
   const { songs, loading: songsLoading, error: songsError, refreshSongs } = useSongs();
   const [activeTab, setActiveTab] = useState('home');
   const [currentSong, setCurrentSong] = useState(null);
@@ -44,18 +41,6 @@ function AppContent() {
     setCurrentSong(songs[prevIndex]);
     setIsPlaying(true);
   };
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <Loader2 className="animate-spin text-primary" size={48} />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <LoginPage />;
-  }
 
   return (
     <div className="flex min-h-screen bg-black text-white relative custom-cursor font-sans">
@@ -114,9 +99,7 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <AppContent />
   );
 }
 
