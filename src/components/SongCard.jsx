@@ -1,37 +1,29 @@
 import React from 'react';
-import { Play } from 'lucide-react';
+import { Play, Music2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const SongCard = ({ song, onPlay }) => {
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4 }}
       viewport={{ once: true }}
-      className="glass-card p-4 rounded-2xl group relative cursor-pointer"
-      onClick={() => onPlay(song)}
+      className="bg-[#161616] p-4 rounded-3xl group relative cursor-pointer hover:bg-[#1a1a1a] transition-spotify border border-white/5"
+      onClick={() => onPlay({ song_name: song.song_name, url: song.url })}
     >
-      <div className="relative aspect-square overflow-hidden rounded-xl mb-4 shadow-xl">
-        <img 
-          src={song.cover} 
-          alt={song.title} 
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" 
-        />
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-end p-4">
-          <button className="h-12 w-12 rounded-full bg-primary text-black flex items-center justify-center shadow-2xl translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+      <div className="relative aspect-square overflow-hidden rounded-[24px] mb-4 shadow-xl bg-neon-gradient flex items-center justify-center">
+        <Music2 size={40} className="text-black group-hover:scale-110 transition-transform duration-500" />
+        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+          <button className="h-12 w-12 rounded-full bg-white text-black flex items-center justify-center shadow-2xl scale-90 group-hover:scale-100 transition-transform duration-300">
             <Play fill="currentColor" size={24} className="ml-1" />
           </button>
         </div>
       </div>
       
-      <div className="space-y-1">
-        <h3 className="font-bold text-white truncate text-base">{song.title}</h3>
-        <p className="text-zinc-400 text-sm truncate font-medium">{song.artist}</p>
-      </div>
-
-      <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
-         <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+      <div className="space-y-0.5 px-1">
+        <h3 className="font-bold text-white truncate text-sm">{song.song_name || "Untitled Track"}</h3>
+        <p className="text-zinc-500 text-[11px] font-bold uppercase tracking-wider">Track</p>
       </div>
     </motion.div>
   );

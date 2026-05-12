@@ -3,91 +3,216 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  --spotify-green: #1DB954;
+  --spotify-black: #000000;
+  --spotify-dark: #0b0b0b;
+  --glass-white: rgba(255, 255, 255, 0.05);
+  --glass-white-strong: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-blur: 32px;
 }
 
-body {
-  @apply bg-black text-white selection:bg-primary/30;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  overflow: hidden; /* Main window scroll disabled, use custom scrolls in content */
+@layer base {
+  body {
+    @apply text-white antialiased overflow-x-hidden min-h-screen bg-spotify-black;
+    font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  body::before {
+    content: "";
+    @apply fixed inset-0 pointer-events-none;
+    background: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000000 80%);
+    z-index: -2;
+  }
+
+  /* Liquid Glass Background Elements */
+  .bg-blobs {
+    @apply fixed inset-0 overflow-hidden pointer-events-none -z-10;
+  }
+
+  .blob {
+    @apply absolute rounded-full blur-[120px] opacity-[0.15] animate-liquid-slow;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight text-white;
+  }
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+@layer components {
+  /* Premium Liquid Glass Panels */
+  .glass-panel {
+    @apply relative border border-glass-border shadow-glass-strong;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+    backdrop-filter: blur(var(--glass-blur));
+    border-radius: 28px;
+  }
+
+  /* Subtle Shine Effect */
+  .glass-panel::after {
+    content: "";
+    @apply absolute inset-0 rounded-[inherit] pointer-events-none;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 40%, transparent 60%, rgba(255, 255, 255, 0.05) 100%);
+  }
+
+  .glass-card {
+    @apply relative overflow-hidden transition-all duration-500 border border-glass-border shadow-glass-soft;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px);
+    border-radius: 24px;
+  }
+
+  .glass-card:hover {
+    @apply border-spotify-green/40 -translate-y-2 shadow-glass-strong;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Interactive Elements */
+  .btn-spotify {
+    @apply relative flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold transition-all duration-500 shadow-spotify-glow overflow-hidden;
+    background: var(--spotify-green);
+    color: black;
+  }
+
+  /* Glossy Apple-style Reflection */
+  .btn-spotify::before {
+    content: "";
+    @apply absolute inset-0 opacity-20 pointer-events-none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, transparent 50%);
+  }
+
+  .btn-spotify:hover {
+    @apply scale-[1.05] -translate-y-0.5;
+    background: #1ed760;
+    box-shadow:
+      0 0 20px rgba(29, 185, 84, 0.45),
+      0 0 45px rgba(29, 185, 84, 0.35),
+      0 0 80px rgba(29, 185, 84, 0.25);
+  }
+
+  .btn-spotify:active {
+    @apply scale-[0.97] translate-y-0;
+  }
+
+  .btn-glass {
+    @apply flex items-center justify-center gap-3 px-6 py-3 rounded-full font-bold transition-all duration-500 border border-glass-border;
+    background: rgba(255, 255, 255, 0.06);
+    color: white;
+    backdrop-filter: blur(12px);
+  }
+
+  .btn-glass:hover {
+    @apply bg-white/12 border-white/30 scale-105 shadow-glass-soft;
+  }
+
+  /* Custom Range Slider (Apple Style) */
+  .apple-range {
+    @apply appearance-none bg-white/10 h-1.5 rounded-full cursor-pointer transition-all duration-300;
+  }
+
+  .apple-range::-webkit-slider-thumb {
+    @apply appearance-none w-0 h-0 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)];
+    transition: all 0.3s ease;
+  }
+
+  .apple-range:hover::-webkit-slider-thumb {
+    @apply w-4 h-4;
+  }
+
+  /* Modern Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply rounded-full;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--spotify-green);
+  }
+
+  /* Text Gradients */
+  .liquid-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-spotify-green to-white;
+  }
+
+  /* Animations */
+  .hover-glow:hover {
+    filter: drop-shadow(0 0 12px rgba(29, 185, 84, 0.5));
+  }
+
+  .bg-liquid-mesh {
+    background: 
+      radial-gradient(at 0% 0%, rgba(29, 185, 84, 0.15) 0px, transparent 50%),
+      radial-gradient(at 50% 0%, rgba(29, 185, 84, 0.1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(29, 185, 84, 0.15) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(29, 185, 84, 0.05) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(29, 185, 84, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(29, 185, 84, 0.15) 0px, transparent 50%);
+    filter: blur(80px);
+  }
+
+  .bg-glass-shine {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+@layer utilities {
+  .shadow-glass-soft {
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.35),
+      inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  }
+  
+  .shadow-glass-strong {
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.45),
+      inset 0 1px 1px rgba(255, 255, 255, 0.08),
+      inset 0 -1px 1px rgba(255, 255, 255, 0.02);
+  }
+
+  .shadow-spotify-glow {
+    box-shadow:
+      0 0 15px rgba(29, 185, 84, 0.35),
+      0 0 35px rgba(29, 185, 84, 0.25),
+      0 0 60px rgba(29, 185, 84, 0.15);
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+/* Skeleton Loading Shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.2; transform: scale(1.1); }
 }
 
-/* Custom Cursor */
-.custom-cursor {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231DB954' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3C/svg%3E"), auto;
+.animate-pulse-soft {
+  animation: pulse-soft 10s ease-in-out infinite;
 }
 
-/* Glassmorphism Refined */
-.glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.skeleton {
+  @apply relative overflow-hidden bg-white/5 rounded-xl;
 }
 
-.glass-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.glass-card:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-  border-color: rgba(29, 185, 84, 0.3);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-/* Scrollbar Refined */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(29, 185, 84, 0.5);
-}
-
-/* Animated Gradient Text */
-.text-gradient {
-  background: linear-gradient(to right, #1DB954, #1ed760);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Animations */
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-slide-up {
-  animation: slideUp 0.6s ease-out forwards;
+.skeleton::after {
+  content: "";
+  @apply absolute inset-0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  animation: shimmer 2s infinite;
 }
