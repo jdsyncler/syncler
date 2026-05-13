@@ -39,8 +39,15 @@ const Sidebar = ({ activeTab, setActiveTab, isMobile, onClose, playlists = [], c
             <img src="/logo.png" alt="logo" className="w-full h-full object-cover" />
           </div>
           <div>
-            <h1 className="text-2xl font-black tracking-tighter text-white">SYNCLER</h1>
-            <p className="text-[10px] font-bold text-spotify-green uppercase tracking-[0.3em]">Premium</p>
+            <h1 className="text-2xl font-black tracking-tighter text-white leading-tight">SYNCLER</h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+              className="text-[9px] font-black text-zinc-500 uppercase tracking-[0.5em] mt-0.5"
+            >
+              By <span className="text-spotify-green">JD</span>
+            </motion.p>
           </div>
         </div>
         

@@ -262,9 +262,19 @@ const Player = ({
                 </button>
                 <div className="text-center">
                   <p className="text-[9px] font-black text-zinc-500 uppercase tracking-[0.4em] mb-1">Lossless Audio</p>
-                  <div className="flex items-center space-x-1.5 justify-center">
-                     <div className="w-1.5 h-1.5 bg-spotify-green rounded-full animate-pulse shadow-[0_0_8px_rgba(29,185,84,1)]" />
-                     <h3 className="font-black text-xs tracking-widest uppercase">SYNCLER</h3>
+                  <div className="flex flex-col items-center">
+                    <div className="flex items-center space-x-1.5 justify-center">
+                       <div className="w-1.5 h-1.5 bg-spotify-green rounded-full animate-pulse shadow-[0_0_8px_rgba(29,185,84,1)]" />
+                       <h3 className="font-black text-xs tracking-widest uppercase">SYNCLER</h3>
+                    </div>
+                    <motion.p 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.8 }}
+                      className="text-[7px] font-black text-zinc-600 uppercase tracking-[0.6em] mt-1"
+                    >
+                      By <span className="text-spotify-green/60">JD</span>
+                    </motion.p>
                   </div>
                 </div>
                 <div className="w-10 h-10 lg:hidden" /> {/* Spacer */}
