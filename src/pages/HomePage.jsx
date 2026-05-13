@@ -56,31 +56,31 @@ const HomePage = ({ songs, isSearching, loading, error, currentSong, isPlaying, 
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0%,transparent_70%)]" />
 
           {/* Content Overlay */}
-          <div className="relative h-full flex flex-col justify-end p-5 lg:p-20 z-10">
-            <div className="flex items-center space-x-3 mb-3 lg:mb-6">
-               <div className="px-2 py-0.5 bg-white/10 backdrop-blur-md rounded-full border border-white/10 flex items-center space-x-2">
+          <div className="relative h-full flex flex-col justify-end p-4 lg:p-20 z-10">
+            <div className="flex items-center space-x-2 mb-2 lg:mb-6">
+               <div className="px-1.5 py-0.5 bg-white/10 backdrop-blur-md rounded-full border border-white/10 flex items-center space-x-1.5">
                  <div className="w-1 h-1 bg-spotify-green rounded-full animate-pulse shadow-[0_0_8px_rgba(29,185,84,1)]" />
-                 <span className="text-[7px] lg:text-[10px] font-black text-white uppercase tracking-widest">Premium Collection</span>
+                 <span className="text-[6px] lg:text-[10px] font-black text-white uppercase tracking-widest">Premium</span>
                </div>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-9xl font-black text-white mb-6 lg:mb-10 tracking-tighter leading-[0.95]">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-9xl font-black text-white mb-4 lg:mb-10 tracking-tighter leading-[0.95]">
               {title === 'All Songs' ? 'Library' : title}
             </h1>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 lg:space-x-8">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-8">
               <button 
                 onClick={() => safeSongs.length > 0 && onPlaySong(safeSongs[0])}
-                className="btn-spotify px-6 sm:px-8 lg:px-12 py-3 lg:py-5 flex items-center justify-center space-x-2.5 lg:space-x-4 active:scale-95 transition-all w-full sm:w-auto"
+                className="btn-spotify px-6 sm:px-8 lg:px-12 py-2.5 lg:py-5 flex items-center justify-center space-x-2 lg:space-x-4 active:scale-95 transition-all w-full sm:w-auto"
               >
-                <Play size={18} lg:size={28} fill="currentColor" />
-                <span className="font-black text-xs sm:text-sm lg:text-lg tracking-tight">Play Mix</span>
+                <Play size={16} lg:size={28} fill="currentColor" />
+                <span className="font-black text-xs sm:text-sm lg:text-lg tracking-tight uppercase sm:normal-case">Play Mix</span>
               </button>
 
-              <div className="flex items-center space-x-6 lg:space-x-12 px-2 sm:px-0">
+              <div className="flex items-center space-x-6 lg:space-x-12 px-2 sm:px-0 py-1 sm:py-0">
                  <div className="text-left">
-                    <p className="text-lg lg:text-3xl font-black text-white tracking-tighter leading-none">{safeSongs.length}</p>
-                    <p className="text-[7px] lg:text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-0.5 lg:mt-1">Tracks</p>
+                    <p className="text-base lg:text-3xl font-black text-white tracking-tighter leading-none">{safeSongs.length}</p>
+                    <p className="text-[6px] lg:text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-0.5 lg:mt-1">Tracks</p>
                  </div>
               </div>
             </div>

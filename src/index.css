@@ -57,7 +57,7 @@
     @apply relative border border-glass-border shadow-glass-strong;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
     backdrop-filter: blur(var(--glass-blur));
-    border-radius: 24px;
+    border-radius: 20px;
     transform: translateZ(0);
     will-change: backdrop-filter;
   }
@@ -65,7 +65,8 @@
   @media (max-width: 768px) {
     .glass-panel {
       --glass-blur: 16px;
-      border-radius: 20px;
+      border-radius: 16px;
+      padding: 12px;
     }
   }
 
@@ -79,8 +80,15 @@
     @apply relative overflow-hidden transition-all duration-300 border border-glass-border shadow-glass-soft;
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(12px);
-    border-radius: 20px;
+    border-radius: 16px;
     will-change: transform, background-color;
+  }
+
+  @media (max-width: 768px) {
+    .glass-card {
+      border-radius: 12px;
+      padding: 12px;
+    }
   }
 
   @media (hover: hover) {
