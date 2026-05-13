@@ -142,7 +142,7 @@ const BulkImportPage = ({ onRefresh, existingSongs = [] }) => {
   }), [uploadQueue]);
 
   return (
-    <div className="pt-8 pb-32 max-w-5xl mx-auto px-4 lg:px-8" onPaste={onPaste}>
+    <div className="pt-4 lg:pt-8 pb-32 w-full max-w-5xl mx-auto px-4 lg:px-8 overflow-hidden" onPaste={onPaste}>
       <header className="mb-12">
         <div className="flex items-center space-x-4 mb-2">
            <div className="h-12 w-12 bg-spotify-green rounded-2xl flex items-center justify-center shadow-lg shadow-spotify-green/20">
