@@ -165,17 +165,19 @@ const Player = ({
             </div>
 
             {/* Core Controls */}
-            <div className="flex items-center space-x-4 lg:space-x-6 flex-1 justify-center lg:px-4">
-              <button 
-                onClick={() => setIsShuffle(!isShuffle)}
-                className={`hidden lg:block transition-all duration-300 hover:scale-110 ${isShuffle ? 'text-spotify-green drop-shadow-[0_0_8px_rgba(29,185,84,0.5)]' : 'text-zinc-500 hover:text-white'}`}
-              >
-                <Shuffle size={16} />
-              </button>
-              
-              <button onClick={onPrevious} className="hidden sm:block text-zinc-400 hover:text-white transition-all duration-300 hover:scale-110 active:scale-90">
-                <SkipBack size={24} fill="currentColor" />
-              </button>
+            <div className="flex flex-col sm:flex-row items-center sm:space-x-6 flex-1 justify-center lg:px-4">
+              <div className="flex items-center space-x-6 mb-2 sm:mb-0">
+                <button 
+                  onClick={() => setIsShuffle(!isShuffle)}
+                  className={`hidden lg:block transition-all duration-300 hover:scale-110 ${isShuffle ? 'text-spotify-green drop-shadow-[0_0_8px_rgba(29,185,84,0.5)]' : 'text-zinc-500 hover:text-white'}`}
+                >
+                  <Shuffle size={16} />
+                </button>
+                
+                <button onClick={onPrevious} className="hidden sm:block text-zinc-400 hover:text-white transition-all duration-300 hover:scale-110 active:scale-90">
+                  <SkipBack size={24} fill="currentColor" />
+                </button>
+              </div>
               
               <button 
                 onClick={() => setIsPlaying(!isPlaying)}
@@ -184,17 +186,19 @@ const Player = ({
                 {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-1" />}
               </button>
 
-              <button onClick={onNext} className="text-zinc-400 hover:text-white transition-all duration-300 hover:scale-110 active:scale-90">
-                <SkipForward size={24} fill="currentColor" />
-              </button>
-              
-              <button 
-                onClick={() => setRepeatMode(repeatMode === 'none' ? 'all' : repeatMode === 'all' ? 'one' : 'none')}
-                className={`hidden lg:block relative transition-all duration-300 hover:scale-110 ${repeatMode !== 'none' ? 'text-spotify-green drop-shadow-[0_0_8px_rgba(29,185,84,0.5)]' : 'text-zinc-500 hover:text-white'}`}
-              >
-                <Repeat size={16} />
-                {repeatMode === 'one' && <span className="absolute -top-1.5 -right-1.5 text-[7px] font-black bg-spotify-green text-black rounded-full px-1 border border-black shadow-lg">1</span>}
-              </button>
+              <div className="flex items-center space-x-6 mt-2 sm:mt-0">
+                <button onClick={onNext} className="text-zinc-400 hover:text-white transition-all duration-300 hover:scale-110 active:scale-90">
+                  <SkipForward size={24} fill="currentColor" />
+                </button>
+                
+                <button 
+                  onClick={() => setRepeatMode(repeatMode === 'none' ? 'all' : repeatMode === 'all' ? 'one' : 'none')}
+                  className={`hidden lg:block relative transition-all duration-300 hover:scale-110 ${repeatMode !== 'none' ? 'text-spotify-green drop-shadow-[0_0_8px_rgba(29,185,84,0.5)]' : 'text-zinc-500 hover:text-white'}`}
+                >
+                  <Repeat size={16} />
+                  {repeatMode === 'one' && <span className="absolute -top-1.5 -right-1.5 text-[7px] font-black bg-spotify-green text-black rounded-full px-1 border border-black shadow-lg">1</span>}
+                </button>
+              </div>
             </div>
 
             {/* Utility */}

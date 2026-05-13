@@ -64,20 +64,20 @@ const HomePage = ({ songs, isSearching, loading, error, currentSong, isPlaying, 
                </div>
             </div>
 
-            <h1 className="text-4xl sm:text-6xl lg:text-9xl font-black text-white mb-4 lg:mb-10 tracking-tighter leading-[0.95]">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-9xl font-black text-white mb-6 lg:mb-10 tracking-tighter leading-[0.95]">
               {title === 'All Songs' ? 'Library' : title}
             </h1>
 
-            <div className="flex items-center space-x-3 lg:space-x-8">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 lg:space-x-8">
               <button 
                 onClick={() => safeSongs.length > 0 && onPlaySong(safeSongs[0])}
-                className="btn-spotify px-6 sm:px-8 lg:px-12 py-3 lg:py-5 flex items-center space-x-2.5 lg:space-x-4 active:scale-95 transition-all"
+                className="btn-spotify px-6 sm:px-8 lg:px-12 py-3 lg:py-5 flex items-center justify-center space-x-2.5 lg:space-x-4 active:scale-95 transition-all w-full sm:w-auto"
               >
                 <Play size={18} lg:size={28} fill="currentColor" />
                 <span className="font-black text-xs sm:text-sm lg:text-lg tracking-tight">Play Mix</span>
               </button>
 
-              <div className="flex items-center space-x-6 lg:space-x-12">
+              <div className="flex items-center space-x-6 lg:space-x-12 px-2 sm:px-0">
                  <div className="text-left">
                     <p className="text-lg lg:text-3xl font-black text-white tracking-tighter leading-none">{safeSongs.length}</p>
                     <p className="text-[7px] lg:text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-0.5 lg:mt-1">Tracks</p>

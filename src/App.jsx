@@ -144,7 +144,7 @@ const MainApp = () => {
   }, []);
 
   return (
-    <div className="flex h-[100dvh] bg-black text-white relative font-sans overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-[100dvh] bg-black text-white relative font-sans overflow-x-hidden w-full max-w-full">
       {/* Immersive Liquid Mesh Background - Optimized for performance */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 bg-black">
         <div className="absolute inset-0 bg-liquid-mesh opacity-20" />
@@ -187,7 +187,7 @@ const MainApp = () => {
           existingSongs={songs}
         />
         
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-10 mt-4 lg:mt-8 pb-44 lg:pb-48 overflow-x-hidden">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-6 lg:mt-8 pb-44 lg:pb-48 overflow-x-hidden">
           <Suspense fallback={<LoadingFallback />}>
             <AnimatePresence mode="wait">
               {activeView === 'playlists' ? (

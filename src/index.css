@@ -14,9 +14,14 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --vh: 1vh;
 }
+* {
+  box-sizing: border-box;
+}
+
 @layer base {
   html, body, #root {
     width: 100%;
+    max-width: 100%;
     overflow-x: hidden;
     background: black;
     margin: 0;

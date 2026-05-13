@@ -11,7 +11,7 @@ const SongListItem = ({ song, index, isActive, isPlaying, onPlay, onLike, onAddT
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: Math.min(index * 0.03, 0.5) }}
-      className={`group flex items-center justify-between p-2 lg:p-4 rounded-xl lg:rounded-2xl transition-all duration-300 cursor-pointer border select-none active:scale-[0.98] min-w-0 ${
+      className={`group flex flex-wrap items-center justify-between p-2 lg:p-4 rounded-xl lg:rounded-2xl transition-all duration-300 cursor-pointer border select-none active:scale-[0.98] min-w-0 gap-2 ${
         isActive 
           ? 'bg-white/10 border-white/10 shadow-glass-soft' 
           : 'bg-transparent border-transparent active:bg-white/5'
@@ -60,7 +60,7 @@ const SongListItem = ({ song, index, isActive, isPlaying, onPlay, onLike, onAddT
       </div>
 
       {/* Actions */}
-      <div className="flex items-center space-x-1 lg:space-x-8 shrink-0 ml-2">
+      <div className="flex items-center space-x-1 lg:space-x-8 shrink-0 ml-auto">
         <button 
           onClick={(e) => {
             e.stopPropagation();

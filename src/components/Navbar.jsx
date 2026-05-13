@@ -28,8 +28,8 @@ const Navbar = ({ onRefresh, searchQuery, setSearchQuery, onCleanLibrary, onView
   };
 
   return (
-    <nav className="sticky top-4 z-40 px-0 transition-all duration-500 left-0 right-0 mx-auto w-[92%] lg:w-[94%] max-w-md lg:max-w-7xl">
-      <div className="glass-panel px-3 lg:px-8 py-2 lg:py-4 flex items-center justify-between shadow-glass-strong border-white/5 backdrop-blur-2xl rounded-2xl lg:rounded-[32px]">
+    <nav className="fixed top-4 left-0 right-0 mx-auto w-[92%] max-w-md lg:max-w-7xl z-50 transition-all duration-500">
+      <div className="glass-panel px-3 lg:px-8 py-2 lg:py-4 flex items-center justify-between shadow-glass-strong border-white/5 backdrop-blur-xl rounded-2xl lg:rounded-[32px]">
         {/* Navigation Controls */}
         <div className="flex items-center space-x-2">
           <button 
