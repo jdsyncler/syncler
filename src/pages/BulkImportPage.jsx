@@ -6,6 +6,7 @@ import {
   RefreshCw, Music, Check
 } from 'lucide-react';
 import { songService } from '../services/songService';
+import { cleanSongName } from '../lib/utils';
 
 const BulkImportPage = ({ onRefresh, existingSongs = [] }) => {
   const [isDragging, setIsDragging] = useState(false);
@@ -39,7 +40,8 @@ const BulkImportPage = ({ onRefresh, existingSongs = [] }) => {
       const addedFiles = [];
 
       for (const file of newFiles) {
-        const name = file.name.replace(/\.[^/.]+$/, "");
+        const rawName = file.name.replace(/\.[^/.]+$/, "");
+        const name = cleanSongName(rawName);
         const lowerName = name.toLowerCase();
 
         if (currentQueueNames.has(lowerName)) continue;

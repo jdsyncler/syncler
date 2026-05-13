@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Search, Library, Heart, Music } from 'lucide-react';
+import { Home, Search, Library, Music } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const MobileNav = ({ activeTab, setActiveTab, currentSong }) => {
@@ -7,7 +7,6 @@ const MobileNav = ({ activeTab, setActiveTab, currentSong }) => {
     { id: 'library', label: 'Home', icon: Home },
     { id: 'search', label: 'Search', icon: Search },
     { id: 'nowplaying', label: 'Player', icon: Music, disabled: !currentSong },
-    { id: 'liked', label: 'Liked', icon: Heart },
     { id: 'playlists', label: 'Library', icon: Library },
   ];
 

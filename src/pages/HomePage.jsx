@@ -1,9 +1,9 @@
 import React from 'react';
 import SongListItem from '../components/SongListItem';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, Music, SearchX, Heart, Play, Zap, Star } from 'lucide-react';
+import { Loader2, Music, SearchX, Play, Zap } from 'lucide-react';
 
-const HomePage = ({ songs, isSearching, loading, error, currentSong, isPlaying, onPlaySong, onLike, onAddToPlaylist, onAddToQueue, title }) => {
+const HomePage = ({ songs, isSearching, loading, error, currentSong, isPlaying, onPlaySong, onAddToPlaylist, onAddToQueue, title }) => {
   const safeSongs = Array.isArray(songs) ? songs : [];
   const [visibleCount, setVisibleCount] = React.useState(30);
   const observerTarget = React.useRef(null);
@@ -101,7 +101,6 @@ const HomePage = ({ songs, isSearching, loading, error, currentSong, isPlaying, 
               </div>
               <div className="flex items-center space-x-2 bg-white/5 p-1 rounded-xl">
                 <button className="p-2 bg-white/10 rounded-lg text-white shadow-lg transition-all"><Zap size={14} /></button>
-                <button className="p-2 text-zinc-500 hover:text-white transition-all"><Star size={14} /></button>
               </div>
             </div>
           </div>
@@ -116,7 +115,6 @@ const HomePage = ({ songs, isSearching, loading, error, currentSong, isPlaying, 
                   isActive={currentSong?.url === song.url}
                   isPlaying={isPlaying}
                   onPlay={onPlaySong} 
-                  onLike={onLike}
                   onAddToPlaylist={onAddToPlaylist}
                   onAddToQueue={onAddToQueue}
                 />
@@ -135,21 +133,17 @@ const HomePage = ({ songs, isSearching, loading, error, currentSong, isPlaying, 
               className="h-[300px] lg:h-[400px] flex flex-col items-center justify-center text-center p-8 lg:p-20 glass-panel border-dashed border-white/10"
             >
               <div className="mb-6 lg:mb-10 p-6 lg:p-10 bg-white/5 rounded-3xl lg:rounded-[40px] border border-white/5">
-                {title.includes('Liked') ? (
-                  <Heart size={48} lg:size={64} className="text-zinc-800" />
-                ) : isSearching ? (
+                {isSearching ? (
                   <SearchX size={48} lg:size={64} className="text-zinc-800" />
                 ) : (
-                  <Music size={48} lg:size={64} className="text-zinc-800" />
+                  <img src="/logo.png" alt="logo" className="h-16 w-16 lg:h-24 lg:w-24 object-contain opacity-20" />
                 )}
               </div>
               <h3 className="text-2xl lg:text-3xl font-black mb-2 lg:mb-4 text-white tracking-tighter">
-                {title.includes('Liked') ? 'Empty Favorites' : isSearching ? 'Zero Results' : 'Library Offline'}
+                {isSearching ? 'Zero Results' : 'Library Offline'}
               </h3>
               <p className="text-zinc-500 text-xs lg:text-sm max-w-sm mx-auto font-bold tracking-tight">
-                {title.includes('Liked') 
-                  ? 'Heart your favorite tracks to build your collection.' 
-                  : isSearching 
+                {isSearching 
                     ? 'No matches found in your collection.' 
                     : 'Connect your cloud account to start streaming.'}
               </p>

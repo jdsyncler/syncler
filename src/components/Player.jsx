@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   Play, Pause, SkipBack, SkipForward, Volume2, 
-  Repeat, Shuffle, Maximize2, Heart, 
+  Repeat, Shuffle, Maximize2, 
   ChevronDown, ListMusic, X, Volume1, VolumeX
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cleanSongName } from '../lib/utils';
 
 const Player = ({ 
   currentSong, isPlaying, setIsPlaying, onNext, onPrevious, 
-  onLike, isLiked, isExpanded, setIsExpanded, songs,
+  isExpanded, setIsExpanded, songs,
   isShuffle, setIsShuffle, repeatMode, setRepeatMode,
   queue, removeFromQueue, clearQueue
 }) => {
@@ -25,7 +26,7 @@ const Player = ({
   useEffect(() => {
     if (currentSong && 'mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: currentSong.song_name || 'Unknown',
+        title: cleanSongName(currentSong.song_name || 'Unknown'),
         artist: 'SYNCLER Premium',
         album: 'My Collection',
         artwork: [
@@ -148,15 +149,15 @@ const Player = ({
                 className="relative cursor-pointer shrink-0" 
                 onClick={() => setIsExpanded(true)}
               >
-                <div className="h-9 w-9 lg:h-12 lg:w-12 rounded-lg lg:rounded-xl overflow-hidden bg-spotify-dark border border-white/10 flex items-center justify-center shadow-glass-soft relative group">
-                  <img src="/logo.png" alt="artwork" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/40 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center transition-all duration-300 backdrop-blur-sm">
+                <div className="h-9 w-9 lg:h-12 lg:w-12 flex items-center justify-center relative group">
+                  <img src="/logo.png" alt="artwork" className="w-full h-full object-contain" />
+                  <div className="absolute inset-0 bg-black/40 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center transition-all duration-300 backdrop-blur-sm rounded-lg lg:rounded-xl">
                     <Maximize2 size={12} className="text-white" />
                   </div>
                 </div>
               </div>
               <div className="truncate py-1 flex-1">
-                <h4 className="font-bold text-white text-[10px] lg:text-sm truncate tracking-tight">{(currentSong.song_name || "Unknown Track")}</h4>
+                <h4 className="font-bold text-white text-[10px] lg:text-sm truncate tracking-tight">{cleanSongName(currentSong.song_name || "Unknown Track")}</h4>
                 <div className="flex lg:flex items-center space-x-1 mt-0.5">
                    <div className="w-0.5 h-0.5 bg-spotify-green rounded-full animate-pulse" />
                    <p className="text-zinc-500 text-[6px] font-black uppercase tracking-widest truncate">Live</p>
@@ -216,12 +217,6 @@ const Player = ({
                 />
               </div>
               
-              <button 
-                onClick={() => onLike(currentSong.url)}
-                className={`p-2 rounded-xl transition-all duration-300 ${isLiked ? 'text-spotify-green lg:bg-spotify-green/10' : 'text-zinc-500 hover:text-white'}`}
-              >
-                 <Heart size={20} fill={isLiked ? "currentColor" : "none"} />
-              </button>
 
               <button 
                 onClick={() => setShowQueue(!showQueue)}
@@ -286,10 +281,9 @@ const Player = ({
                 <div className="w-full max-w-[320px] lg:max-w-xl aspect-square relative group">
                   <motion.div 
                     layoutId="player-artwork"
-                    className="w-full h-full rounded-[40px] overflow-hidden shadow-2xl border border-white/10 bg-spotify-dark flex items-center justify-center relative z-10"
+                    className="w-full h-full flex items-center justify-center relative z-10"
                   >
-                    <img src="/logo.png" alt="artwork" className="w-full h-full object-cover opacity-80" />
-                    <div className="absolute inset-0 bg-glass-shine opacity-20 pointer-events-none" />
+                    <img src="/logo.png" alt="artwork" className="w-full h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)]" />
                   </motion.div>
                   <div className="absolute -inset-4 bg-spotify-green/10 blur-3xl opacity-50 rounded-full -z-10" />
                 </div>
@@ -302,18 +296,10 @@ const Player = ({
                         initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
                         className="text-4xl lg:text-7xl font-black text-white mb-2 truncate tracking-tight leading-tight"
                       >
-                        {(currentSong.song_name || "Unknown Track")}
+                        {cleanSongName(currentSong.song_name || "Unknown Track")}
                       </motion.h1>
                       <p className="text-lg lg:text-2xl text-zinc-400 font-bold tracking-tight">Premium High Fidelity</p>
                     </div>
-                    <button 
-                      onClick={() => onLike(currentSong.url)}
-                      className={`p-4 lg:p-6 rounded-3xl transition-all ${
-                        isLiked ? 'text-spotify-green bg-spotify-green/10 border border-spotify-green/20' : 'text-zinc-500 bg-white/5 border border-white/5'
-                      }`}
-                    >
-                      <Heart size={28} fill={isLiked ? "currentColor" : "none"} />
-                    </button>
                   </div>
 
                   {/* Progress */}
@@ -415,7 +401,7 @@ const Player = ({
                        <div className="h-10 w-10 rounded-xl bg-spotify-dark flex items-center justify-center shrink-0 overflow-hidden shadow-glass-soft">
                           <img src="/logo.png" alt="q" className="w-full h-full object-cover opacity-60" />
                        </div>
-                       <p className="text-xs font-bold text-white truncate">{(song.song_name || "Unknown")}</p>
+                       <p className="text-xs font-bold text-white truncate">{cleanSongName(song.song_name || "Unknown")}</p>
                     </div>
                     <button onClick={(e) => { e.stopPropagation(); removeFromQueue(i); }} className="p-2 text-zinc-500 hover:text-red-400 rounded-xl active:scale-90 transition-all">
                       <X size={16} />

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Play, Heart, Plus, ListPlus, Pause, Music, MoreHorizontal } from 'lucide-react';
+import { Play, Plus, ListPlus, Pause, Music, MoreHorizontal } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { cleanSongName } from '../lib/utils';
 
-const SongListItem = ({ song, index, isActive, isPlaying, onPlay, onLike, onAddToPlaylist, onAddToQueue }) => {
+const SongListItem = ({ song, index, isActive, isPlaying, onPlay, onAddToPlaylist, onAddToQueue }) => {
   // Removed per-item Audio objects for performance. 
   // Metadata should be pre-fetched or handled by the player service.
   
@@ -38,19 +39,19 @@ const SongListItem = ({ song, index, isActive, isPlaying, onPlay, onLike, onAddT
         </div>
 
         {/* Artwork Module */}
-        <div className="h-9 w-9 lg:h-14 lg:w-14 rounded-md lg:rounded-2xl overflow-hidden shrink-0 bg-spotify-dark border border-white/5 flex items-center justify-center relative shadow-glass-soft transition-transform duration-300">
-           {isActive && isPlaying ? (
-              <Pause size={14} fill="white" className="text-white z-10" />
-           ) : (
-              <Music size={14} className={`z-10 transition-colors duration-300 ${isActive ? 'text-spotify-green' : 'text-zinc-700 lg:group-hover:text-zinc-400'}`} />
-           )}
-           <img src="/logo.png" alt="logo" className="absolute inset-0 w-full h-full object-cover opacity-20" />
+        <div className="h-10 w-10 lg:h-14 lg:w-14 flex items-center justify-center shrink-0 overflow-hidden relative">
+          <img src="/logo.png" alt="cover" className="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-all duration-500" />
+          {isActive && isPlaying && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+              <Pause size={14} fill="white" className="text-white" />
+            </div>
+          )}
         </div>
         
         {/* Metadata */}
         <div className="min-w-0 flex-1 truncate pr-1">
           <h3 className={`font-bold text-[11px] lg:text-base truncate tracking-tight transition-colors duration-300 ${isActive ? 'text-spotify-green' : 'text-white'}`}>
-            {song.song_name || "Unknown Track"}
+            {cleanSongName(song.song_name || "Unknown Track")}
           </h3>
           <div className="flex items-center space-x-1 truncate">
             <span className="text-[5px] font-black text-zinc-700 uppercase tracking-widest shrink-0">Hifi</span>
@@ -61,15 +62,6 @@ const SongListItem = ({ song, index, isActive, isPlaying, onPlay, onLike, onAddT
 
       {/* Actions */}
       <div className="flex items-center space-x-0.5 lg:space-x-8 shrink-0 ml-auto">
-        <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            onLike(song?.url);
-          }}
-          className={`p-1.5 lg:p-2.5 transition-all duration-300 active:scale-125 ${song?.liked ? 'text-spotify-green' : 'text-zinc-700'}`}
-        >
-          <Heart size={14} lg:size={20} fill={song?.liked ? "currentColor" : "none"} strokeWidth={song?.liked ? 0 : 2.5} />
-        </button>
 
         <button 
           onClick={(e) => {

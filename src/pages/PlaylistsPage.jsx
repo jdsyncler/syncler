@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ListMusic, Plus, Trash2, Edit2, Play, Music, ChevronLeft } from 'lucide-react';
 import SongListItem from '../components/SongListItem';
 
-const PlaylistsPage = ({ songs, playlists, createPlaylist, deletePlaylist, renamePlaylist, removeSongFromPlaylist, onPlaySong, currentSong, isPlaying, onLike }) => {
+const PlaylistsPage = ({ songs, playlists, createPlaylist, deletePlaylist, renamePlaylist, removeSongFromPlaylist, onPlaySong, currentSong, isPlaying }) => {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
   const [isRenaming, setIsRenaming] = useState(null);
   const [newName, setNewName] = useState('');
@@ -187,7 +187,6 @@ const PlaylistsPage = ({ songs, playlists, createPlaylist, deletePlaylist, renam
                         isActive={currentSong?.url === song.url}
                         isPlaying={isPlaying}
                         onPlay={onPlaySong}
-                        onLike={onLike}
                       />
                       <button 
                         onClick={(e) => {

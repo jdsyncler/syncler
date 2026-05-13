@@ -26,24 +26,13 @@ export const useSongs = () => {
       // Fetch Supabase Songs
       const data = await songService.getSongs();
       
-      // Merge with liked status from localStorage
-      let likedIds = [];
-      try {
-        const savedLiked = localStorage.getItem('syncler_liked_ids');
-        likedIds = savedLiked ? JSON.parse(savedLiked) : [];
-        if (!Array.isArray(likedIds)) likedIds = [];
-      } catch (e) {
-        console.error('Liked IDs Parse Error:', e);
-        likedIds = [];
-      }
-
       // Deep Repair: Safe mapping with defaults and corrupted track removal
       const rawData = Array.isArray(data) ? data : [];
-      const songsWithLikes = rawData.map((song, index) => {
+      const sanitizedSongs = rawData.map((song, index) => {
         if (!song) return null;
         
         // Support both old and new schema fields if they exist, but map to standard
-        const cleanTitle = song.song_name || song.title || "Unknown Track";
+        const cleanTitle = cleanSongName(song.song_name || song.title || "Unknown Track");
         const cleanUrl = song.url || song.song_url || "";
 
         // Corrupted Song Filter: Must have a URL
@@ -54,15 +43,14 @@ export const useSongs = () => {
 
         return {
           song_name: cleanTitle,
-          url: cleanUrl,
-          liked: Array.isArray(likedIds) && likedIds.includes(cleanUrl)
+          url: cleanUrl
         };
       }).filter(Boolean); // Remove null/corrupted entries
 
-      setSongs(songsWithLikes);
+      setSongs(sanitizedSongs);
       
       try {
-        localStorage.setItem('syncler_songs_local_state', JSON.stringify(songsWithLikes));
+        localStorage.setItem('syncler_songs_local_state', JSON.stringify(sanitizedSongs));
       } catch (e) {
         console.error('Failed to cache library state:', e);
       }
@@ -77,28 +65,45 @@ export const useSongs = () => {
 
   useEffect(() => {
     fetchSongs();
-  }, []);
 
-  const toggleLike = (url) => {
-    let likedUrls = [];
-    try {
-      likedUrls = JSON.parse(localStorage.getItem('syncler_liked_ids') || '[]');
-    } catch (e) {
-      console.error('Liked IDs Parse Error in toggle:', e);
-    }
-    
-    let newLikedUrls;
-    if (likedUrls.includes(url)) {
-      newLikedUrls = likedUrls.filter(lurl => lurl !== url);
-    } else {
-      newLikedUrls = [...likedUrls, url];
-    }
-    localStorage.setItem('syncler_liked_ids', JSON.stringify(newLikedUrls));
-    
-    setSongs(prev => prev.map(song => 
-      song.url === url ? { ...song, liked: !song.liked } : song
-    ));
-  };
+    // Set up Realtime Subscription for library updates
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'songs'
+        },
+        (payload) => {
+          if (payload.eventType === 'UPDATE') {
+            setSongs(prev => prev.map(song => {
+              if (song.url === payload.new.url) {
+                return {
+                  ...song,
+                  song_name: cleanSongName(payload.new.song_name)
+                };
+              }
+              return song;
+            }));
+          } else if (payload.eventType === 'INSERT') {
+            const newSong = {
+              song_name: cleanSongName(payload.new.song_name),
+              url: payload.new.url
+            };
+            setSongs(prev => [newSong, ...prev]);
+          } else if (payload.eventType === 'DELETE') {
+            setSongs(prev => prev.filter(song => song.url !== payload.old.url));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const runCleanup = async () => {
     setLoading(true);
@@ -137,7 +142,5 @@ export const useSongs = () => {
     }
   };
 
-
-
-  return { songs, loading, error, refreshSongs: fetchSongs, toggleLike, runCleanup, setSongs };
+  return { songs, loading, error, refreshSongs: fetchSongs, runCleanup, setSongs };
 };

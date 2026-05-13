@@ -18,14 +18,60 @@ const BulkImportPage = lazy(() => import('./pages/BulkImportPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
 const LoadingFallback = () => (
-  <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
-    <Loader2 size={40} className="text-spotify-green animate-spin" />
-    <p className="text-xs font-black uppercase tracking-[0.3em] text-zinc-500">Initializing System...</p>
+  <div className="fixed inset-0 z-[1000] bg-black flex flex-col items-center justify-center p-6">
+    {/* Ambient Glows */}
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-spotify-green/10 blur-[100px] rounded-full animate-pulse" />
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] bg-cyan-500/5 blur-[80px] rounded-full" />
+    
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+      className="relative z-10 flex flex-col items-center"
+    >
+      <div className="h-48 w-48 lg:h-64 lg:w-64 flex items-center justify-center mb-6">
+        <img 
+          src="/logo.png" 
+          alt="SYNCLER" 
+          className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(29,185,84,0.3)]" 
+        />
+      </div>
+      
+      <div className="text-center space-y-2">
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 1 }}
+          className="text-4xl lg:text-6xl font-black tracking-tighter text-white leading-none"
+        >
+          SYNCLER
+        </motion.h1>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 1 }}
+          className="flex items-center justify-center space-x-2"
+        >
+          <span className="text-[10px] lg:text-xs font-black text-zinc-500 uppercase tracking-[0.6em]">
+            By <span className="text-spotify-green">JD</span>
+          </span>
+        </motion.div>
+      </div>
+
+      <div className="mt-16 relative w-48 lg:w-64 h-[1px] bg-white/5 overflow-hidden">
+        <motion.div 
+          initial={{ x: '-100%' }}
+          animate={{ x: '100%' }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-spotify-green to-transparent"
+        />
+      </div>
+    </motion.div>
   </div>
 );
 
 const MainApp = () => {
-  const { songs, loading: songsLoading, error: songsError, refreshSongs, toggleLike, runCleanup } = useSongs();
+  const { songs, loading: songsLoading, error: songsError, refreshSongs, runCleanup } = useSongs();
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeView, setActiveView] = useState('library');
   const [currentSong, setCurrentSong] = useState(null);
@@ -68,9 +114,6 @@ const MainApp = () => {
       return Array.isArray(recentlyPlayed) ? recentlyPlayed : [];
     }
 
-    if (activeView === 'liked') {
-      return filtered.filter(song => song && song.liked);
-    }
 
     return filtered;
   }, [songs, activeView, searchQuery, recentlyPlayed]);
@@ -178,7 +221,7 @@ const MainApp = () => {
           searchQuery={searchQuery} 
           setSearchQuery={(val) => {
             setSearchQuery(val);
-            if (val && activeView !== 'liked') setActiveView('search');
+            if (val) setActiveView('search');
             else if (!val && activeView === 'search') setActiveView('library');
           }} 
           onCleanLibrary={runCleanup}
@@ -202,7 +245,6 @@ const MainApp = () => {
                     onPlaySong={handlePlaySong}
                     currentSong={currentSong}
                     isPlaying={isPlaying}
-                    onLike={toggleLike}
                   />
                 </motion.div>
               ) : activeView === 'import' ? (
@@ -228,10 +270,9 @@ const MainApp = () => {
                     currentSong={currentSong}
                     isPlaying={isPlaying}
                     onPlaySong={handlePlaySong} 
-                    onLike={toggleLike}
                     onAddToPlaylist={openPlaylistModal}
                     onAddToQueue={addToQueue}
-                    title={activeView === 'liked' ? 'Liked Tracks' : activeView === 'search' ? 'Search Results' : activeView === 'history' ? 'Recently Played' : 'Your Library'}
+                    title={activeView === 'search' ? 'Search Results' : activeView === 'history' ? 'Recently Played' : 'Your Library'}
                   />
                 </motion.div>
               )}
@@ -321,8 +362,6 @@ const MainApp = () => {
         setIsPlaying={setIsPlaying} 
         onNext={handleNext}
         onPrevious={handlePrevious}
-        onLike={toggleLike}
-        isLiked={currentSong && Array.isArray(songs) ? songs.find(s => s.url === currentSong.url)?.liked : false}
         isExpanded={isPlayerExpanded}
         setIsExpanded={setIsPlayerExpanded}
         songs={songs}

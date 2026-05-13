@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { cleanSongName } from '../lib/utils';
 
 export const songService = {
   async getSongs() {
@@ -16,7 +17,7 @@ export const songService = {
     const { data, error } = await supabase
       .from('songs')
       .insert(songs.map(song => ({
-        song_name: song.song_name,
+        song_name: cleanSongName(song.song_name),
         url: song.url
       })))
       .select();
@@ -52,7 +53,7 @@ export const songService = {
 
     // 3. Save Metadata to Database
     const payload = {
-      song_name: songName || file.name.replace(/\.[^/.]+$/, ""),
+      song_name: cleanSongName(songName || file.name.replace(/\.[^/.]+$/, "")),
       url: publicUrl
     };
 

@@ -2,37 +2,33 @@ export const cleanSongName = (filename) => {
   if (!filename) return '';
   let cleanName = filename;
 
-  // 1. Remove .mp3 extension
-  cleanName = cleanName.replace(/\.mp3$/i, '');
+  // 1. Remove file extensions (mp3, wav, flac, m4a, etc.)
+  cleanName = cleanName.replace(/\.(mp3|wav|flac|m4a|ogg|aac)$/i, '');
 
-  // 2. Remove specific unwanted domains and tags (case-insensitive)
+  // 2. Remove specific unwanted patterns (case-insensitive)
   const unwantedPatterns = [
-    /masstamilan\.dev/gi,
-    /masstamilan\.org/gi,
-    /masstamilan\.com/gi,
+    /masstamilan\.(dev|fm|org|com|net|in|info|me|tv|asia)/gi,
     /masstamilan/gi,
-    /www\./gi
+    // URLs and common website patterns
+    /https?:\/\/[^\s]+/gi,
+    /www\.[a-z0-9-]+\.[a-z.]{2,}/gi,
+    /[a-z0-9-]+\.(com|net|org|dev|fm|in|info|me|tv|asia)/gi,
+    // Specific extensions mentioned by user that might remain
+    /\.(org|dev|fm)$/gi,
+    /\[.*?\]/g, // bracketed text like [MassTamilan]
   ];
 
   unwantedPatterns.forEach(pattern => {
     cleanName = cleanName.replace(pattern, '');
   });
 
-  // 3. Remove brackets and their contents (e.g., [MassTamilan], [])
-  cleanName = cleanName.replace(/\[.*?\]/g, '');
+  // 3. Replace hyphens and underscores with spaces
+  cleanName = cleanName.replace(/[-_]/g, ' ');
 
-  // 4. Replace underscores with spaces
-  cleanName = cleanName.replace(/_/g, ' ');
-
-  // 5. Clean up hyphens
-  cleanName = cleanName.replace(/-+/g, '-'); // Collapse multiple hyphens
-  
-  // 6. Clean up trailing/leading hyphens and spaces
-  cleanName = cleanName.replace(/^[- ]+|[- ]+$/g, '');
-
-  // 7. Collapse multiple spaces into a single space
+  // 4. Collapse multiple spaces into a single space
   cleanName = cleanName.replace(/\s+/g, ' ');
 
+  // 5. Final trim and cleanup of any lingering artifacts
   return cleanName.trim();
 };
 

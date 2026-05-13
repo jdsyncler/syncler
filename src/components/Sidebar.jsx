@@ -1,6 +1,5 @@
-import React from 'react';
 import { 
-  Home, Search, Library, PlusSquare, Heart, 
+  Home, Search, Library, PlusSquare, 
   LogOut, X, ListMusic, Upload, Music
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -17,7 +16,6 @@ const Sidebar = ({ activeTab, setActiveTab, isMobile, onClose, playlists = [], c
 
   const collectionNav = [
     { icon: PlusSquare, label: 'Create Playlist', id: 'create', action: () => createPlaylist && createPlaylist('New Playlist') },
-    { icon: Heart, label: 'Liked Songs', id: 'liked' },
     { icon: Upload, label: 'Bulk Import', id: 'import' },
   ];
 
@@ -33,21 +31,27 @@ const Sidebar = ({ activeTab, setActiveTab, isMobile, onClose, playlists = [], c
       flex flex-col relative z-50 overflow-hidden shadow-2xl transition-all duration-700
     `}>
       {/* Branding */}
-      <div className="p-10 pb-8">
-        <div className="flex items-center space-x-4 group cursor-pointer">
-          <div className="h-12 w-12 rounded-2xl overflow-hidden shadow-glass-soft flex items-center justify-center bg-spotify-dark border border-white/10 group-hover:scale-110 transition-transform duration-500">
-            <img src="/logo.png" alt="logo" className="w-full h-full object-cover" />
+      <div className="p-10 pb-12 relative overflow-hidden">
+        {/* Ambient background glow for branding */}
+        <div className="absolute top-0 left-0 w-full h-full bg-spotify-green/5 blur-[50px] pointer-events-none opacity-50" />
+        
+        <div className="flex flex-col items-center space-y-4 relative z-10 group cursor-pointer">
+          <div className="h-24 w-24 overflow-hidden flex items-center justify-center transition-all duration-700">
+            <img src="/logo.png" alt="logo" className="w-full h-full object-contain" />
           </div>
-          <div>
-            <h1 className="text-2xl font-black tracking-tighter text-white leading-tight">SYNCLER</h1>
-            <motion.p 
+          <div className="text-center">
+            <h1 className="text-3xl font-black tracking-tighter text-white leading-tight">SYNCLER</h1>
+            <motion.div 
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="text-[9px] font-black text-zinc-500 uppercase tracking-[0.5em] mt-0.5"
+              className="flex items-center justify-center space-x-2 mt-1"
             >
-              By <span className="text-spotify-green">JD</span>
-            </motion.p>
+              <div className="w-1 h-1 bg-spotify-green rounded-full animate-pulse shadow-[0_0_8px_rgba(29,185,84,0.8)]" />
+              <p className="text-[9px] font-black text-zinc-500 uppercase tracking-[0.6em]">
+                By <span className="text-spotify-green">JD</span>
+              </p>
+            </motion.div>
           </div>
         </div>
         
