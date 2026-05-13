@@ -12,8 +12,8 @@ const MobileNav = ({ activeTab, setActiveTab, currentSong }) => {
   ];
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-[80] bg-black/60 backdrop-blur-3xl border-t border-white/5 safe-pb">
-      <div className="flex items-center justify-around h-16 px-2">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-[80] bg-black/60 backdrop-blur-3xl border-t border-white/5 safe-pb pb-[env(safe-area-inset-bottom)]">
+      <div className="flex items-center justify-around h-14 lg:h-16 px-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

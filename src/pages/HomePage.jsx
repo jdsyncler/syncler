@@ -47,7 +47,7 @@ const HomePage = ({ songs, isSearching, loading, error, currentSong, isPlaying, 
         <motion.section 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-[24px] lg:rounded-[48px] aspect-[16/11] sm:aspect-[21/9] min-h-[260px] lg:min-h-[400px] shadow-glass-strong border border-white/5 group"
+          className="relative overflow-hidden rounded-[20px] lg:rounded-[48px] aspect-[16/12] sm:aspect-[21/9] min-h-[220px] lg:min-h-[400px] shadow-glass-strong border border-white/5 group transition-all duration-500"
         >
           {/* Background Canvas */}
           <div className="absolute inset-0 bg-spotify-dark" />

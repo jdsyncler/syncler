@@ -127,10 +127,10 @@ const Player = ({
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed bottom-[74px] lg:bottom-4 left-2 right-2 lg:left-1/2 lg:-translate-x-1/2 z-50 lg:w-[720px] h-[64px] lg:h-20 glass-panel px-2.5 lg:px-8 flex items-center justify-between shadow-glass-strong border-white/10 backdrop-blur-3xl rounded-xl lg:rounded-full overflow-hidden lg:overflow-visible group/dock select-none"
+            transition={{ type: 'spring', damping: 28, stiffness: 220 }}
+            className="fixed bottom-[68px] lg:bottom-4 left-2.5 right-2.5 lg:left-1/2 lg:-translate-x-1/2 z-50 lg:w-[720px] h-[58px] lg:h-20 glass-panel px-2.5 lg:px-8 flex items-center justify-between shadow-glass-strong border-white/10 backdrop-blur-3xl rounded-xl lg:rounded-full overflow-hidden lg:overflow-visible group/dock select-none mb-[env(safe-area-inset-bottom)] transition-all duration-300"
             style={{ 
-              background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(15, 15, 15, 0.7) 100%)',
+              background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(15, 15, 15, 0.75) 100%)',
               boxShadow: '0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(29, 185, 84, 0.1)'
             }}
           >
