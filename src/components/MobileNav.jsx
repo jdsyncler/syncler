@@ -1,18 +1,18 @@
 import React from 'react';
-import { Home, Search, Library, Music } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Home, Search, Music, Library, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const MobileNav = ({ activeTab, setActiveTab, currentSong }) => {
   const tabs = [
     { id: 'library', label: 'Home', icon: Home },
     { id: 'search', label: 'Search', icon: Search },
-    { id: 'nowplaying', label: 'Player', icon: Music, disabled: !currentSong },
-    { id: 'playlists', label: 'Library', icon: Library },
+    { id: 'nowplaying', label: 'Playing', icon: Music, disabled: !currentSong },
+    { id: 'playlists', label: 'Vault', icon: Library },
   ];
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-[80] bg-black/60 backdrop-blur-3xl border-t border-white/5 safe-pb pb-[env(safe-area-inset-bottom)]">
-      <div className="flex items-center justify-around h-14 lg:h-16 px-2">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] px-4 pb-[calc(env(safe-area-inset-bottom)+8px)] pt-2 pointer-events-none">
+      <div className="max-w-md mx-auto glass-panel-premium h-16 flex items-center justify-around px-2 pointer-events-auto shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-white/10">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -21,26 +21,32 @@ const MobileNav = ({ activeTab, setActiveTab, currentSong }) => {
             <button
               key={tab.id}
               onClick={() => !tab.disabled && setActiveTab(tab.id)}
-              className={`flex flex-col items-center justify-center flex-1 py-1 transition-all duration-300 ${
+              className={`relative flex flex-col items-center justify-center flex-1 h-full transition-all duration-300 ${
                 isActive ? 'text-spotify-green' : tab.disabled ? 'text-zinc-800' : 'text-zinc-500'
               }`}
             >
-              <div className="relative">
-                <Icon 
-                  size={22} 
-                  strokeWidth={isActive ? 2.5 : 2}
-                  className={`transition-transform duration-300 ${isActive ? 'scale-110' : ''}`}
-                />
+              <AnimatePresence>
                 {isActive && (
-                  <motion.div 
-                    layoutId="mobile-nav-active"
-                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-spotify-green rounded-full shadow-[0_0_8px_rgba(29,185,84,0.8)]"
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute inset-x-2 inset-y-1 bg-white/5 rounded-xl border border-white/5"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
+              </AnimatePresence>
+              
+              <div className="relative z-10 flex flex-col items-center">
+                <Icon size={20} strokeWidth={isActive ? 2.5 : 2} className={isActive ? 'drop-shadow-[0_0_8px_#00ff66]' : ''} />
+                <span className={`text-[9px] mt-1 font-black uppercase tracking-widest ${isActive ? 'opacity-100' : 'opacity-40'}`}>
+                  {tab.label}
+                </span>
               </div>
-              <span className="text-[10px] font-black uppercase tracking-widest mt-1 scale-[0.8] origin-top">
-                {tab.label}
-              </span>
+
+              {tab.id === 'library' && !isActive && (
+                 <div className="absolute top-2 right-4">
+                    <Sparkles size={8} className="text-spotify-cyan animate-pulse" />
+                 </div>
+              )}
             </button>
           );
         })}

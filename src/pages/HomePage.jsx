@@ -1,156 +1,134 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import SongListItem from '../components/SongListItem';
+import SongCard from '../components/SongCard';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, Music, SearchX, Play, Zap } from 'lucide-react';
+import { Music, SearchX, Play, Zap, Clock, Sparkles } from 'lucide-react';
 
-const HomePage = ({ songs, isSearching, loading, error, currentSong, isPlaying, onPlaySong, onAddToPlaylist, onAddToQueue, title }) => {
-  const safeSongs = Array.isArray(songs) ? songs : [];
-  const [visibleCount, setVisibleCount] = React.useState(30);
-  const observerTarget = React.useRef(null);
+const HomePage = ({ songs, recentlyPlayed = [], loading, currentSong, isPlaying, onPlaySong, onAddToPlaylist, onAddToQueue, title }) => {
+  const [greeting, setGreeting] = useState('');
+  const [visibleCount, setVisibleCount] = useState(30);
+  const observerTarget = useRef(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting('Good Morning');
+    else if (hour < 18) setGreeting('Good Afternoon');
+    else setGreeting('Good Evening');
+  }, []);
+
+  useEffect(() => {
     setVisibleCount(30);
-  }, [safeSongs.length, title]);
+  }, [songs.length, title]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const observer = new IntersectionObserver(
       entries => {
-        if (entries[0].isIntersecting && visibleCount < safeSongs.length) {
+        if (entries[0].isIntersecting && visibleCount < songs.length) {
           setVisibleCount(prev => prev + 30);
         }
       },
       { threshold: 0.1, rootMargin: '200px' }
     );
-
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
-    }
-
+    if (observerTarget.current) observer.observe(observerTarget.current);
     return () => observer.disconnect();
-  }, [visibleCount, safeSongs.length]);
-
-  if (loading) {
-    return (
-      <div className="h-[60vh] flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-6">
-          <Loader2 className="animate-spin text-spotify-green" size={40} strokeWidth={3} />
-          <p className="text-zinc-500 font-black uppercase tracking-[0.3em] text-[10px]">Synchronizing Library</p>
-        </div>
-      </div>
-    );
-  }
+  }, [visibleCount, songs.length]);
 
   return (
-    <div className="pt-4 lg:pt-12 pb-32">
-      <div className="max-w-7xl mx-auto space-y-8 lg:space-y-16">
-        {/* Hero Section - More compact on mobile */}
+    <div className="space-y-12 lg:space-y-20 py-8 lg:py-12">
+      {/* Dynamic Greeting & Featured */}
+      {!loading && title === 'Library' && (
         <motion.section 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-[20px] lg:rounded-[48px] aspect-[16/12] sm:aspect-[21/9] min-h-[220px] lg:min-h-[400px] shadow-glass-strong border border-white/5 group transition-all duration-500"
+          className="space-y-8"
         >
-          {/* Background Canvas */}
-          <div className="absolute inset-0 bg-spotify-dark" />
-          <div className="absolute inset-0 bg-gradient-to-br from-spotify-green/20 via-transparent to-transparent opacity-60" />
-          <div className="absolute -top-1/2 -left-1/4 w-full h-full bg-spotify-green/10 blur-[100px] rounded-full" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0%,transparent_70%)]" />
-
-          {/* Content Overlay */}
-          <div className="relative h-full flex flex-col justify-end p-4 lg:p-20 z-10">
-            <div className="flex items-center space-x-2 mb-2 lg:mb-6">
-               <div className="px-1.5 py-0.5 bg-white/10 backdrop-blur-md rounded-full border border-white/10 flex items-center space-x-1.5">
-                 <div className="w-1 h-1 bg-spotify-green rounded-full animate-pulse shadow-[0_0_8px_rgba(29,185,84,1)]" />
-                 <span className="text-[6px] lg:text-[10px] font-black text-white uppercase tracking-widest">Premium</span>
-               </div>
-            </div>
-
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-9xl font-black text-white mb-4 lg:mb-10 tracking-tighter leading-[0.95]">
-              {title === 'All Songs' ? 'Library' : title}
-            </h1>
-
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-8">
-              <button 
-                onClick={() => safeSongs.length > 0 && onPlaySong(safeSongs[0])}
-                className="btn-spotify px-6 sm:px-8 lg:px-12 py-2.5 lg:py-5 flex items-center justify-center space-x-2 lg:space-x-4 active:scale-95 transition-all w-full sm:w-auto"
-              >
-                <Play size={16} lg:size={28} fill="currentColor" />
-                <span className="font-black text-xs sm:text-sm lg:text-lg tracking-tight uppercase sm:normal-case">Play Mix</span>
-              </button>
-
-              <div className="flex items-center space-x-6 lg:space-x-12 px-2 sm:px-0 py-1 sm:py-0">
-                 <div className="text-left">
-                    <p className="text-base lg:text-3xl font-black text-white tracking-tighter leading-none">{safeSongs.length}</p>
-                    <p className="text-[6px] lg:text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-0.5 lg:mt-1">Tracks</p>
-                 </div>
-              </div>
-            </div>
-          </div>
-        </motion.section>
-
-        {/* Track List Canvas */}
-        <section className="space-y-6 lg:space-y-10">
-          <div className="flex items-end justify-between px-2 lg:px-4">
-            <div className="space-y-1 lg:space-y-2">
-              <h2 className="text-2xl lg:text-4xl font-black text-white tracking-tighter">Tracks</h2>
-              <div className="h-1 w-12 lg:w-20 bg-spotify-green rounded-full" />
-            </div>
-            <div className="flex items-center space-x-4 lg:space-x-6">
-              <div className="hidden sm:flex items-center space-x-3">
-                <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Sort:</span>
-                <button className="text-[9px] font-black text-white uppercase tracking-widest pb-1 border-b-2 border-spotify-green">Recent</button>
-              </div>
-              <div className="flex items-center space-x-2 bg-white/5 p-1 rounded-xl">
-                <button className="p-2 bg-white/10 rounded-lg text-white shadow-lg transition-all"><Zap size={14} /></button>
-              </div>
-            </div>
-          </div>
-
-          {safeSongs.length > 0 ? (
-            <div className="grid grid-cols-1 gap-1 lg:gap-2">
-              {safeSongs.slice(0, visibleCount).map((song, index) => (
-                <SongListItem 
-                  key={song.url} 
-                  index={index}
-                  song={song} 
-                  isActive={currentSong?.url === song.url}
-                  isPlaying={isPlaying}
-                  onPlay={onPlaySong} 
-                  onAddToPlaylist={onAddToPlaylist}
-                  onAddToQueue={onAddToQueue}
-                />
-              ))}
-              
-              {visibleCount < safeSongs.length && (
-                <div ref={observerTarget} className="h-32 flex items-center justify-center">
-                  <Loader2 className="animate-spin text-spotify-green/20" size={24} />
-                </div>
-              )}
-            </div>
-          ) : (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="h-[300px] lg:h-[400px] flex flex-col items-center justify-center text-center p-8 lg:p-20 glass-panel border-dashed border-white/10"
-            >
-              <div className="mb-6 lg:mb-10 p-6 lg:p-10 bg-white/5 rounded-3xl lg:rounded-[40px] border border-white/5">
-                {isSearching ? (
-                  <SearchX size={48} lg:size={64} className="text-zinc-800" />
-                ) : (
-                  <img src="/logo.png" alt="logo" className="h-16 w-16 lg:h-24 lg:w-24 object-contain opacity-20" />
-                )}
-              </div>
-              <h3 className="text-2xl lg:text-3xl font-black mb-2 lg:mb-4 text-white tracking-tighter">
-                {isSearching ? 'Zero Results' : 'Library Offline'}
-              </h3>
-              <p className="text-zinc-500 text-xs lg:text-sm max-w-sm mx-auto font-bold tracking-tight">
-                {isSearching 
-                    ? 'No matches found in your collection.' 
-                    : 'Connect your cloud account to start streaming.'}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl lg:text-6xl font-black tracking-tighter italic">{greeting}</h1>
+              <p className="text-zinc-500 text-xs lg:text-sm font-bold uppercase tracking-[0.3em] mt-2 flex items-center">
+                <Sparkles size={14} className="text-spotify-green mr-2" />
+                Curated for you
               </p>
-            </motion.div>
+            </div>
+            <div className="hidden lg:flex space-x-4">
+              <div className="h-14 w-14 rounded-2xl glass-panel-premium flex items-center justify-center text-spotify-green">
+                <Zap size={24} />
+              </div>
+            </div>
+          </div>
+
+          {/* Recently Played - Horizontal Scroll */}
+          {recentlyPlayed.length > 0 && (
+            <div className="space-y-6">
+              <div className="flex items-center space-x-3">
+                <Clock size={18} className="text-zinc-500" />
+                <h2 className="text-xl font-black tracking-tight uppercase">Recently Played</h2>
+              </div>
+              <div className="h-scroll-premium">
+                {recentlyPlayed.slice(0, 10).map((song, i) => (
+                  <div key={`${song.url}-${i}`} className="h-scroll-item w-48 lg:w-64">
+                    <SongCard 
+                      song={song} 
+                      onPlay={onPlaySong} 
+                      isActive={currentSong?.url === song.url}
+                      isPlaying={isPlaying}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
-        </section>
-      </div>
+        </motion.section>
+      )}
+
+      {/* Main Library Section */}
+      <section className="space-y-8">
+        <div className="flex items-end justify-between border-b border-white/5 pb-6">
+          <div className="space-y-2">
+            <h2 className="text-3xl lg:text-5xl font-black tracking-tighter italic">{title}</h2>
+            <div className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest text-zinc-500">
+              <div className="h-1.5 w-1.5 bg-spotify-green rounded-full shadow-[0_0_8px_#00ff66]" />
+              <span>{songs.length} Tracks Syncronized</span>
+            </div>
+          </div>
+          {songs.length > 0 && (
+            <button 
+              onClick={() => onPlaySong(songs[0])}
+              className="h-14 w-14 lg:h-16 lg:w-16 rounded-full bg-white text-black flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all"
+            >
+              <Play fill="black" size={24} className="ml-1" />
+            </button>
+          )}
+        </div>
+
+        {songs.length > 0 ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-4">
+            {songs.slice(0, visibleCount).map((song, index) => (
+              <SongListItem 
+                key={`${song.url}-${index}`} 
+                index={index}
+                song={song} 
+                isActive={currentSong?.url === song.url}
+                isPlaying={isPlaying}
+                onPlay={onPlaySong} 
+                onAddToPlaylist={onAddToPlaylist}
+                onAddToQueue={onAddToQueue}
+              />
+            ))}
+            {visibleCount < songs.length && <div ref={observerTarget} className="h-20" />}
+          </div>
+        ) : !loading && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="py-24 text-center glass-panel-premium border-dashed"
+          >
+            <Music size={48} className="mx-auto mb-6 text-zinc-800" />
+            <h3 className="text-xl font-black mb-2 tracking-tight">Your library is silent</h3>
+            <p className="text-zinc-500 text-sm max-w-xs mx-auto">Start by importing your favorite tracks to build your premium collection.</p>
+          </motion.div>
+        )}
+      </section>
     </div>
   );
 };

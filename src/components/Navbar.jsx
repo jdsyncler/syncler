@@ -1,97 +1,89 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Upload, ChevronLeft, ChevronRight, X, RefreshCw, Menu, Bell } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Upload, ChevronLeft, ChevronRight, X, Menu, Bell, Zap, Terminal } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 
-const Navbar = ({ onRefresh, searchQuery, setSearchQuery, onCleanLibrary, onViewChange, onToggleMobileMenu, existingSongs = [] }) => {
-  const [isCleaning, setIsCleaning] = useState(false);
+const Navbar = ({ onRefresh, searchQuery, setSearchQuery, onViewChange, onToggleMobileMenu }) => {
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const { user } = useAuth();
 
-  // Debounce search update to parent
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchQuery(localSearch);
-    }, 300);
+    }, 400);
     return () => clearTimeout(timer);
   }, [localSearch, setSearchQuery]);
 
-  // Sync local search with prop if it changes externally
   useEffect(() => {
     setLocalSearch(searchQuery);
   }, [searchQuery]);
 
-  const handleClean = async () => {
-    setIsCleaning(true);
-    if (onCleanLibrary) await onCleanLibrary();
-    setIsCleaning(false);
-  };
-
   return (
-    <nav className="fixed top-3 left-0 right-0 mx-auto w-[92%] max-w-md lg:max-w-7xl z-50 transition-all duration-500">
-      <div className="glass-panel px-3 lg:px-8 py-1.5 lg:py-4 flex items-center justify-between shadow-glass-strong border-white/5 backdrop-blur-xl rounded-2xl lg:rounded-[32px]">
-        {/* Navigation Controls */}
-        <div className="flex items-center space-x-1.5 lg:space-x-2">
+    <nav className="fixed top-4 left-0 right-0 z-[80] px-4 lg:px-12 pointer-events-none">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 pointer-events-auto">
+        
+        {/* Navigation / Mobile Menu Trigger */}
+        <div className="flex items-center space-x-3">
           <button 
             onClick={onToggleMobileMenu} 
-            className="lg:hidden p-1.5 text-zinc-400 active:text-white bg-white/5 rounded-xl active:scale-95 transition-all"
+            className="lg:hidden h-12 w-12 glass-panel-premium flex items-center justify-center text-zinc-400 active:text-white active:scale-95 transition-all"
           >
-            <Menu size={16} />
+            <Menu size={20} />
           </button>
           
-          <div className="hidden lg:flex items-center space-x-3">
-            <button className="p-3 text-zinc-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-2xl transition-all hover:scale-105 active:scale-95">
-              <ChevronLeft size={20} strokeWidth={2.5} />
+          <div className="hidden lg:flex items-center space-x-2">
+            <button className="h-14 w-14 glass-panel-premium flex items-center justify-center text-zinc-400 hover:text-white transition-all hover:scale-105 active:scale-95">
+              <ChevronLeft size={24} />
             </button>
-            <button className="p-3 text-zinc-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-2xl transition-all hover:scale-105 active:scale-95">
-              <ChevronRight size={20} strokeWidth={2.5} />
+            <button className="h-14 w-14 glass-panel-premium flex items-center justify-center text-zinc-400 hover:text-white transition-all hover:scale-105 active:scale-95">
+              <ChevronRight size={24} />
             </button>
           </div>
         </div>
 
-        {/* Search Bar - More responsive width */}
-        <div className="flex-1 max-w-2xl mx-1.5 lg:mx-8">
+        {/* High-Fidelity Search Bar */}
+        <div className="flex-1 max-w-2xl">
           <div className="relative group">
-            <div className="absolute left-2.5 lg:left-5 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-spotify-green transition-all duration-300">
-              <Search size={14} lg:size={20} strokeWidth={2.5} />
+            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-spotify-green transition-all duration-300">
+              <Search size={20} />
             </div>
             <input
               type="text"
               value={localSearch}
               onChange={(e) => setLocalSearch(e.target.value)}
-              placeholder="Search..."
-              className="w-full bg-white/5 border border-white/5 focus:border-spotify-green/20 rounded-xl lg:rounded-2xl pl-8 lg:pl-14 pr-7 py-1.5 lg:py-3.5 text-[10px] lg:text-sm font-bold outline-none transition-all duration-300 focus:bg-white/10 placeholder:text-zinc-700"
+              placeholder="Search Syncler Database..."
+              className="w-full bg-black/40 border border-white/5 focus:border-spotify-green/30 glass-panel-premium h-14 lg:h-16 pl-16 pr-14 text-sm font-black italic tracking-tight outline-none transition-all duration-300 placeholder:text-zinc-800 rounded-[20px]"
             />
             <AnimatePresence>
               {localSearch && (
                 <motion.button
-                  initial={{ opacity: 0, scale: 0.8 }} 
-                  animate={{ opacity: 1, scale: 1 }} 
-                  exit={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
                   onClick={() => setLocalSearch('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 text-zinc-400 hover:text-white bg-white/5 rounded-lg transition-all"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center text-zinc-500 hover:text-white bg-white/5 rounded-xl transition-all"
                 >
-                  <X size={10} strokeWidth={3} />
+                  <X size={14} />
                 </motion.button>
               )}
             </AnimatePresence>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center space-x-1.5 lg:space-x-4">
+        {/* Actions / Profile */}
+        <div className="flex items-center space-x-3">
           <button 
-            onClick={() => onViewChange && onViewChange('import')}
-            className="btn-spotify px-2.5 lg:px-8 py-1.5 lg:py-3.5 text-[7px] lg:text-[10px] font-black uppercase tracking-widest shadow-lg"
+            onClick={() => onViewChange?.('import')}
+            className="hidden sm:flex h-14 lg:h-16 px-8 glass-panel-premium items-center space-x-3 text-white hover:text-spotify-green transition-all group"
           >
-            <Upload size={12} lg:size={16} strokeWidth={3} />
-            <span className="hidden sm:inline ml-1 lg:ml-2">Import</span>
+            <Terminal size={18} className="group-hover:drop-shadow-[0_0_8px_#00ff66]" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Import</span>
           </button>
 
-          <div className="group relative">
-            <div className="relative h-7 w-7 lg:h-12 lg:w-12 rounded-lg lg:rounded-2xl flex items-center justify-center border border-white/10 bg-white/5 active:scale-95 transition-all cursor-pointer">
-              <span className="text-[9px] lg:text-sm font-black text-white">JD</span>
-            </div>
+          <div className="h-12 w-12 lg:h-16 lg:w-16 glass-panel-premium flex items-center justify-center relative group cursor-pointer overflow-hidden">
+             <div className="absolute inset-0 bg-gradient-to-br from-spotify-green/20 to-spotify-cyan/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+             <div className="relative z-10 flex flex-col items-center">
+                <span className="text-[10px] lg:text-sm font-black text-white italic tracking-tighter">JD</span>
+                <div className="h-0.5 w-4 bg-spotify-green rounded-full mt-0.5 shadow-[0_0_8px_#00ff66]" />
+             </div>
           </div>
         </div>
       </div>

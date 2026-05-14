@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, lazy, Suspense } from 'react';
+import React, { useState, useMemo, useCallback, lazy, Suspense, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
@@ -9,7 +9,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { useSongs } from './hooks/useSongs';
 import { useAppCore } from './hooks/useAppCore';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Plus, ListMusic, X, Sparkles, Loader2 } from 'lucide-react';
+import { Plus, ListMusic, X, Sparkles, Loader2, Zap } from 'lucide-react';
 
 // Lazy Load Pages
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -17,56 +17,62 @@ const PlaylistsPage = lazy(() => import('./pages/PlaylistsPage'));
 const BulkImportPage = lazy(() => import('./pages/BulkImportPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
-const LoadingFallback = () => (
-  <div className="fixed inset-0 z-[1000] bg-black flex flex-col items-center justify-center p-6">
-    {/* Ambient Glows */}
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-spotify-green/10 blur-[100px] rounded-full animate-pulse" />
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] bg-cyan-500/5 blur-[80px] rounded-full" />
-    
-    <motion.div 
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-      className="relative z-10 flex flex-col items-center"
-    >
-      <div className="h-48 w-48 lg:h-64 lg:w-64 flex items-center justify-center mb-6">
-        <img 
-          src="/logo.png" 
-          alt="SYNCLER" 
-          className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(29,185,84,0.3)]" 
-        />
-      </div>
-      
-      <div className="text-center space-y-2">
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 1 }}
-          className="text-4xl lg:text-6xl font-black tracking-tighter text-white leading-none"
-        >
-          SYNCLER
-        </motion.h1>
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 1 }}
-          className="flex items-center justify-center space-x-2"
-        >
-          <span className="text-[10px] lg:text-xs font-black text-zinc-500 uppercase tracking-[0.6em]">
-            By <span className="text-spotify-green">JD</span>
-          </span>
-        </motion.div>
-      </div>
+const SplashScreen = ({ onComplete }) => {
+  useEffect(() => {
+    const timer = setTimeout(onComplete, 3000);
+    return () => clearTimeout(timer);
+  }, [onComplete]);
 
-      <div className="mt-16 relative w-48 lg:w-64 h-[1px] bg-white/5 overflow-hidden">
-        <motion.div 
-          initial={{ x: '-100%' }}
-          animate={{ x: '100%' }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-spotify-green to-transparent"
-        />
-      </div>
+  return (
+    <motion.div 
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0, scale: 1.1 }}
+      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed inset-0 z-[9999] bg-black flex items-center justify-center overflow-hidden"
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,255,102,0.15),transparent_70%)]" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
+        className="relative z-10 flex flex-col items-center"
+      >
+        <motion.div
+          animate={{ 
+            scale: [1, 1.08, 1],
+            rotate: [0, 5, -5, 0]
+          }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="h-32 w-32 lg:h-56 lg:w-56 mb-12"
+        >
+          <img src="/logo.png" alt="SYNCLER" className="w-full h-full object-contain drop-shadow-[0_0_50px_rgba(0,255,102,0.5)]" />
+        </motion.div>
+        <div className="relative">
+          <h1 className="text-6xl lg:text-9xl font-black tracking-[ -0.05em] text-white italic glow-text-green">SYNCLER</h1>
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: '100%' }}
+            transition={{ duration: 2, delay: 0.5 }}
+            className="absolute -bottom-4 left-0 h-1 bg-gradient-to-r from-spotify-green to-spotify-cyan rounded-full shadow-[0_0_15px_#00ff66]"
+          />
+        </div>
+        <div className="mt-12 flex items-center space-x-4">
+          <Zap size={14} className="text-spotify-green animate-pulse" />
+          <span className="text-[12px] font-black uppercase tracking-[0.8em] text-zinc-500">Master Core V2</span>
+        </div>
+      </motion.div>
     </motion.div>
+  );
+};
+
+const SkeletonLoader = () => (
+  <div className="space-y-8 py-8 px-4">
+    <div className="h-48 w-full skeleton" />
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {[...Array(6)].map((_, i) => (
+        <div key={i} className="h-20 w-full skeleton" />
+      ))}
+    </div>
   </div>
 );
 
@@ -78,6 +84,7 @@ const MainApp = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isPlayerExpanded, setIsPlayerExpanded] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSplashComplete, setIsSplashComplete] = useState(false);
 
   const { 
     playlists, createPlaylist, deletePlaylist, renamePlaylist, 
@@ -92,9 +99,9 @@ const MainApp = () => {
   const mainContentRef = React.useRef(null);
 
   // Scroll to top on view change
-  React.useEffect(() => {
+  useEffect(() => {
     if (mainContentRef.current) {
-      mainContentRef.current.scrollTo({ top: 0, behavior: 'instant' });
+      mainContentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [activeView]);
 
@@ -113,7 +120,6 @@ const MainApp = () => {
     if (activeView === 'history') {
       return Array.isArray(recentlyPlayed) ? recentlyPlayed : [];
     }
-
 
     return filtered;
   }, [songs, activeView, searchQuery, recentlyPlayed]);
@@ -187,35 +193,22 @@ const MainApp = () => {
   }, []);
 
   return (
-    <div className="flex flex-col lg:flex-row h-[100dvh] bg-black text-white relative font-sans overflow-x-hidden w-full max-w-full safe-pt">
-      {/* Immersive Liquid Mesh Background - Optimized for performance */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 bg-black">
-        <div className="absolute inset-0 bg-liquid-mesh opacity-20" />
-        <div className="absolute top-[-5%] left-[-5%] w-[50%] h-[50%] bg-[#1DB954]/5 blur-[100px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] bg-[#1DB954]/5 blur-[100px] rounded-full" />
+    <div className="flex flex-col lg:flex-row h-screen bg-black text-white relative font-sans overflow-hidden">
+      <AnimatePresence>
+        {!isSplashComplete && <SplashScreen onComplete={() => setIsSplashComplete(true)} />}
+      </AnimatePresence>
+
+      {/* Immersive Background */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(0,255,102,0.05)_0%,transparent_70%)]" />
+        <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_100%_100%,rgba(0,242,255,0.05)_0%,transparent_70%)]" />
       </div>
 
-      {/* Desktop Sidebar Container */}
-      <div className="hidden lg:block w-[300px] flex-shrink-0 p-6 z-20">
+      <div className="hidden lg:block w-72 flex-shrink-0 z-20">
         <Sidebar activeTab={activeView} setActiveTab={handleViewChange} playlists={playlists} createPlaylist={createPlaylist} />
       </div>
 
-      {/* Mobile Sidebar Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <Sidebar 
-            activeTab={activeView} 
-            setActiveTab={handleViewChange} 
-            isMobile={true} 
-            onClose={() => setIsMobileMenuOpen(false)} 
-            playlists={playlists}
-            createPlaylist={createPlaylist}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Main Content Area */}
-      <main ref={mainContentRef} className="flex-1 h-full overflow-y-auto scroll-smooth custom-scrollbar relative z-10 lg:mr-6 lg:py-6 overflow-x-hidden safe-pb">
+      <main ref={mainContentRef} className="flex-1 overflow-y-auto scroll-smooth custom-scrollbar relative z-10 safe-pb">
         <Navbar 
           onRefresh={refreshSongs} 
           searchQuery={searchQuery} 
@@ -230,8 +223,8 @@ const MainApp = () => {
           existingSongs={songs}
         />
         
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-4 lg:mt-8 pb-36 lg:pb-48 overflow-x-hidden">
-          <Suspense fallback={<LoadingFallback />}>
+        <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 pb-40 overflow-x-hidden">
+          <Suspense fallback={<SkeletonLoader />}>
             <AnimatePresence mode="wait">
               {activeView === 'playlists' ? (
                 <motion.div key="playlists" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.4 }}>
@@ -264,6 +257,7 @@ const MainApp = () => {
                 >
                   <HomePage 
                     songs={displaySongs} 
+                    recentlyPlayed={recentlyPlayed}
                     isSearching={searchQuery.length > 0}
                     loading={songsLoading} 
                     error={songsError} 
@@ -272,7 +266,7 @@ const MainApp = () => {
                     onPlaySong={handlePlaySong} 
                     onAddToPlaylist={openPlaylistModal}
                     onAddToQueue={addToQueue}
-                    title={activeView === 'search' ? 'Search Results' : activeView === 'history' ? 'Recently Played' : 'Your Library'}
+                    title={activeView === 'search' ? 'Search Results' : activeView === 'history' ? 'Recently Played' : 'Library'}
                   />
                 </motion.div>
               )}
@@ -281,81 +275,71 @@ const MainApp = () => {
         </div>
       </main>
 
-      {/* Playlist Modal - Liquid Glass Overlay */}
+      {/* Premium Playlist Selection Modal */}
       <AnimatePresence>
         {isPlaylistModalOpen && (
-          <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-6">
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setIsPlaylistModalOpen(false)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-xl"
-            />
+          <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/90 backdrop-blur-2xl">
             <motion.div
-              initial={{ opacity: 0, y: '100%' }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: '100%' }}
-              transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="max-w-md w-full glass-panel p-6 sm:p-10 relative z-10 shadow-glass-strong border-white/10 rounded-t-[32px] sm:rounded-[32px] overflow-hidden"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="max-w-md w-full glass-panel-premium p-8 lg:p-12 relative overflow-hidden"
             >
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center space-x-3">
-                   <div className="p-2 bg-spotify-green/10 rounded-lg">
-                      <ListMusic size={24} className="text-spotify-green" />
-                   </div>
-                   <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">Add to Playlist</h2>
+              <div className="flex items-center justify-between mb-10">
+                <div>
+                  <h2 className="text-3xl font-black italic tracking-tighter">Save to Vault</h2>
+                  <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Select target collection</p>
                 </div>
-                <button onClick={() => setIsPlaylistModalOpen(false)} className="p-2 hover:bg-white/10 rounded-2xl transition-all">
-                  <X size={20} strokeWidth={2.5} />
+                <button 
+                  onClick={() => setIsPlaylistModalOpen(false)}
+                  className="h-12 w-12 glass-panel-premium flex items-center justify-center hover:scale-110 active:scale-90 transition-all"
+                >
+                  <X size={24} />
                 </button>
               </div>
 
-              <div className="space-y-2 max-h-[40vh] overflow-y-auto custom-scrollbar pr-1 mb-8">
-                {(Array.isArray(playlists) ? playlists : []).length === 0 ? (
-                  <div className="py-12 text-center glass-panel border-dashed border-white/5">
-                     <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">No playlists available</p>
-                  </div>
-                ) : (
-                  (Array.isArray(playlists) ? playlists : []).map(playlist => (
-                    <button
-                      key={playlist.id}
-                      onClick={() => {
-                        if (typeof addSongToPlaylist === 'function' && songToAddToPlaylist) {
-                          addSongToPlaylist(playlist.id, songToAddToPlaylist.url);
-                          setIsPlaylistModalOpen(false);
-                        }
-                      }}
-                      className="w-full flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-[20px] transition-all duration-300 group"
-                    >
-                      <div className="flex items-center space-x-4">
-                        <div className="h-10 w-10 rounded-xl overflow-hidden flex items-center justify-center bg-spotify-dark border border-white/5 shadow-glass-soft">
-                          <img src="/logo.png" alt="logo" className="w-full h-full object-cover opacity-60" />
-                        </div>
-                        <div className="text-left">
-                          <p className="text-white font-bold tracking-tight text-sm">{playlist.name}</p>
-                          <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">
-                            {(Array.isArray(playlist.songIds) ? playlist.songIds : []).length} Tracks
-                          </p>
-                        </div>
+              <div className="space-y-4 max-h-[400px] overflow-y-auto no-scrollbar pr-2">
+                {playlists.length > 0 ? playlists.map((p) => (
+                  <motion.button
+                    whileHover={{ scale: 1.02, x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                    key={p.id}
+                    onClick={() => {
+                      addSongToPlaylist(p.id, songToAddToPlaylist);
+                      setIsPlaylistModalOpen(false);
+                    }}
+                    className="w-full flex items-center justify-between p-6 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/5 transition-all text-left group"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="h-12 w-12 bg-zinc-900 rounded-xl flex items-center justify-center text-zinc-500 group-hover:text-spotify-green transition-colors">
+                        <ListMusic size={24} />
                       </div>
-                      <Plus size={16} className="text-zinc-500 group-hover:text-spotify-green transition-colors" strokeWidth={3} />
-                    </button>
-                  ))
+                      <span className="font-black text-lg italic tracking-tight">{p.name}</span>
+                    </div>
+                    <Plus size={20} className="text-zinc-600 group-hover:text-white" />
+                  </motion.button>
+                )) : (
+                  <div className="py-12 text-center opacity-20 flex flex-col items-center">
+                    <ListMusic size={64} className="mb-4" />
+                    <p className="text-xs font-black uppercase tracking-widest">No vaults found</p>
+                  </div>
                 )}
               </div>
 
-              <button
+              <button 
                 onClick={() => {
-                  if (typeof createPlaylist === 'function') createPlaylist('New Playlist');
+                  const name = prompt('Vault Designation:');
+                  if (name) createPlaylist(name);
                 }}
-                className="btn-spotify w-full py-4 text-[10px] font-black uppercase tracking-[0.2em]"
+                className="w-full mt-8 py-5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] hover:bg-white/5 transition-all"
               >
-                <Sparkles size={14} strokeWidth={3} />
-                <span className="ml-2">Create New Instance</span>
+                Establish New Vault
               </button>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* Global Immersive Player Dock */}
       <Player 
         currentSong={currentSong} 
         isPlaying={isPlaying} 
@@ -387,7 +371,7 @@ const App = () => {
   return (
     <ErrorBoundary>
       <Routes>
-        <Route path="/login" element={<Suspense fallback={<LoadingFallback />}><LoginPage /></Suspense>} />
+        <Route path="/login" element={<Suspense fallback={<div />}><LoginPage /></Suspense>} />
         <Route
           path="/*"
           element={
